@@ -1,0 +1,13 @@
+split-folders
+keras
+gdown
+zipp
+python
+argparse
+pandas
+numpy
+sklearn
+scipy
+seaborn
+tensorflow
+optuna
