@@ -2,7 +2,7 @@ split-folders
 keras
 gdown
 zipp
-python
+pandas
 argparse
 pandas
 numpy
