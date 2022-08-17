@@ -1,16 +1,18 @@
 from base_architecture import *
 from base_train import *
 from base_data_loading import *
-
 import numpy as np
 import sklearn
 from sklearn.metrics import accuracy_score
 from keras.backend import clear_session
 
-from .base_test import test_model
+from base_test import test_model
 
-def hpo(trial,train_aug,val_aug,IMG_TARGET_SIZE):
+def hpo(trial):
 
+    IMG_TARGET_SIZE,EPOCHS = set_fixed_hyperparameters()
+    train_aug,val_aug= set_data_augmentation()
+    
     clear_session()
     trial_no = trial.number
 
@@ -24,7 +26,7 @@ def hpo(trial,train_aug,val_aug,IMG_TARGET_SIZE):
     model = create_model(num_layers,activation,learning_rate)
 
     #train the model and get the model
-    current_model,history = train_CNN(model,trial_no,train,val)
+    current_model,history = train_CNN(model,train,val,EPOCHS)
 
     #save loss and accuracy plots for the current trial training
     train_results(history,trial_no)

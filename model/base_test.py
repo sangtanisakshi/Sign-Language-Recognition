@@ -18,21 +18,20 @@ def test_model(current_model,test,trial_no="NA"):
 ##get test results and save them
 def test_results(test,pred_vals):
     classes = list(test.class_indices.keys())
-    cr = classification_report(test.classes, pred_vals, target_names=classes)
     cm = confusion_matrix(test.classes,pred_vals)
     cm_txt = np.array2string(cm)
     disp = ConfusionMatrixDisplay(cm, display_labels = classes)
     plt.rcParams["figure.figsize"] = (15,10)
     disp.plot(cmap=plt.cm.Blues)
     plt.tight_layout()
-    plt.savefig('../results/best_trial_result/'+'final_confusion_matrix.jpg')
-
-    ##save metrics in text file
-    f = open('../results/best_trial_result/best_model_metrics.txt', 'w')
-    f.write('Metrics for Best Model\n\nClassification Report\n\n{}\n\nConfusion Matrix\n\n{}\n'.format(cr, cm))
-    f.close()
-
+    plt.savefig('results/best_model/'+'confusion_matrix.jpg')
     #plt.show() commented for ipynb later
     #print(classification_report(test.classes, pred_vals, target_names=classes))
+    
+    cr = classification_report(test.classes, pred_vals, target_names=classes)
+    ##save metrics in text file
+    f = open('results/best_model/evaluation_metrics.txt', 'w')
+    f.write('Metrics for Best Model\n\nClassification Report\n\n{}\n\nConfusion Matrix\n\n{}\n'.format(cr, cm))
+    f.close()
 
    

@@ -1,6 +1,8 @@
-from keras import Conv2D, MaxPooling2D, BatchNormalization, Dropout, Flatten, Dense
-from keras import layers
-from keras.layers import Sequential
+import tensorflow
+from tensorflow import keras
+from keras import layers,losses,models,optimizers
+from keras.layers import Conv2D, MaxPooling2D, BatchNormalization, Dropout, Flatten, Dense
+from keras.models import Sequential
 from keras.losses import CategoricalCrossentropy
 from keras.optimizers import Adam
 

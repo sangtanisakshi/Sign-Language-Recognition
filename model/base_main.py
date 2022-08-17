@@ -6,21 +6,22 @@ from transfer_learning import *
 
 import optuna
 import joblib
+import os
 from optuna.samplers import TPESampler
 from types import SimpleNamespace
 
-def run_model(data="../base_data.zip"):
+def run_model(data="base_data.zip"):
     
     get_data(data)
     split_data()
     IMG_TARGET_SIZE,EPOCHS = set_fixed_hyperparameters()
     train_aug,val_aug= set_data_augmentation()
-    
+      
     #run hyperparameter optimization
     sampler = TPESampler(seed=123)  # Make the sampler behave in a deterministic way and get reproducable results
     study = optuna.create_study(direction="maximize",sampler=sampler)
-    study.optimize(hpo(train_aug,val_aug,IMG_TARGET_SIZE), n_trials=2)
-    joblib.dump(study,'../results/hyperparameter_optimization/trial_study_data/study.pkl')
+    study.optimize(hpo, n_trials=25)
+    joblib.dump(study,'results/hyperparameter_optimization/trials_data/study.pkl')
 
     print("Number of finished trials: {}".format(len(study.trials)))
     print("Best trial params:")
@@ -38,7 +39,7 @@ def run_model(data="../base_data.zip"):
 
     trial_no = "best_model"
     #train model with best hyperparameters and save results
-    best_model,history = train_CNN(best_model,trial_no,train,val)
+    best_model,history = train_CNN(best_model,train,val,EPOCHS,trial_no)
 
     #test model on the test data, get the accuracy and save metrics
     test_accuracy = test_model(best_model,test,"best_model")
@@ -47,4 +48,5 @@ def run_model(data="../base_data.zip"):
     
 
 if __name__ == "__main__":
+    print(os.getcwd())
     run_model()
