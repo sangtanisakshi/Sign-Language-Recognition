@@ -3,6 +3,7 @@
 import splitfolders
 import tensorflow as tf
 import warnings
+import optuna
 from keras.preprocessing.image import ImageDataGenerator
 warnings.filterwarnings('ignore')
 
@@ -15,9 +16,9 @@ def get_data(data):
 
 def split_data():
     SPLIT_RATIO = (0.75,0.15,0.10)
-    splitfolders.ratio("../base_dataset/", output="../data/",
+    splitfolders.ratio("../grassknot/", output="../base_data/",
     seed=42, ratio=SPLIT_RATIO, group_prefix=None, move=False)
-    print("Split data in the ratio 75:15:10 for training,validation and test. Folders in ./data/")
+    print("Split data in the ratio 75:15:10 for training,validation and test. Folders in ../base_data/")
     
 def set_fixed_hyperparameters():
     #fixed hyperparameters
@@ -41,15 +42,15 @@ def set_data_augmentation():
 
 def load_image_generator(train_aug,val_aug,batch_size,IMG_TARGET_SIZE=(64,64)):
     ##image directories - loading data into train, validation and test
-    train = train_aug.flow_from_directory("./data/train",
+    train = train_aug.flow_from_directory("../base_data/train",
                                 target_size=IMG_TARGET_SIZE,
                                 batch_size=batch_size, shuffle=True)
 
-    val = val_aug.flow_from_directory("./data/val",
+    val = val_aug.flow_from_directory("../base_data/val",
                               target_size=IMG_TARGET_SIZE,
                               batch_size=batch_size, shuffle=False)
 
-    test = val_aug.flow_from_directory("./data/test", 
+    test = val_aug.flow_from_directory("../base_data/test", 
                                target_size=IMG_TARGET_SIZE, 
                                class_mode=None, shuffle=False)
     

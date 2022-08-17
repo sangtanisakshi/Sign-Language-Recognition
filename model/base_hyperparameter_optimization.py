@@ -7,27 +7,29 @@ import sklearn
 from sklearn.metrics import accuracy_score
 from keras.backend import clear_session
 
+from .base_test import test_model
+
 def hpo(trial,train_aug,val_aug,IMG_TARGET_SIZE):
 
-    trial_no = trial.number
     clear_session()
-    
+    trial_no = trial.number
+
     #get the hyperparameters for the ongoing trial
     batch_size,num_layers,activation,learning_rate = get_hpo_parameters(trial)
 
-    #get the image data generators with the trial's image target size and batch size
-    train,val,test = load_image_generator(train_aug,val_aug,IMG_TARGET_SIZE,batch_size)
+    #get the image directories with the trial's selected batch size
+    train,val,test = load_image_generator(train_aug,val_aug,batch_size,IMG_TARGET_SIZE)
 
     #create model architecture with the current trial's hyperparameters
-    model = create_model(trial_no,num_layers,activation,learning_rate)
+    model = create_model(num_layers,activation,learning_rate)
 
-    #train the model and return the history
-    train_trial = train_CNN(model,trial_no,train,val)
+    #train the model and get the model
+    current_model,history = train_CNN(model,trial_no,train,val)
+
+    #save loss and accuracy plots for the current trial training
+    train_results(history,trial_no)
 
     #run the model on the test data and get test accuracy
-    pred = train_trial.predict(test, batch_size=(test.samples//test.batch_size+1))
-    pred_vals = np.argmax(pred, axis=1)
-    score = accuracy_score(test.classes,pred_vals)
-
+    score = test_model(current_model,test)
     #return accuracy of this trial to the study
     return score

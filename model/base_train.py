@@ -5,21 +5,29 @@ from keras import callbacks
 import matplotlib.pyplot as plt
 
 
-##run the model with the hyperparameters of the ongoing trial
-def train_CNN(model,trial_no,train,val):
+#train the CNN model 
+def train_CNN(model,train,val,trial_no="NA"):
+  
   ##implement callback function
   early_stopping = callbacks.EarlyStopping(monitor="val_loss", mode="min", 
-                                        patience=5, restore_best_weights = True) 
-  #train the model, get results, and save it
-  history = model.fit(x=train, validation_data = val, epochs=30, shuffle = True, verbose = 1, callbacks=[early_stopping])
-  save_train_results(history,trial_no)
-  model.save("../results/hyperparameter_optimization/trial_models/model_"+trial_no+".h5")
-  return model
+                                        patience=5, restore_best_weights = True)
+
+  ##train the model, get results, and save it
+  history = model.fit(x=train, validation_data = val, epochs=1, shuffle = True, verbose = 1, callbacks=[early_stopping])
+
+  if trial_no == "best_model":
+    model.save("../results/"+trial_no)
+    train_results(history,trial_no)
+  
+  return model,history
     
-#training results
+#save training plots as results
 def train_results(history,trial_no):
 
-  fig_path = "../results/hyperparameter_optimization/trial_plots/"+"trial"+str(trial_no)+".jpg"
+  if trial_no == "best_model":
+    fig_path == ("../results/loss_acc_curve_" + trial_no + ".jpg")
+  else:
+    fig_path = ("../results/hyperparameter_optimization/trial_plots/" + "trial" + str(trial_no) + ".jpg")
   plt.subplot(2,1,1)
   plt.plot(history.history['accuracy'], label='accuracy')
   plt.plot(history.history['val_accuracy'], label = 'val_accuracy')

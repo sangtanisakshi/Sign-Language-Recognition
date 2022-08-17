@@ -6,14 +6,13 @@ from keras.optimizers import Adam
 
 NUM_CLASSES=26 #A-Z
 
-def create_model(trial_no,num_layers,activation,learning_rate):
-    model_name = ('model_'+str(trial_no))
+def create_model(num_layers,activation,learning_rate):
     ##creating the model architecture
-    model = Sequential(name=model_name)
+    model = Sequential()
     num_filters = [64, 128, 128, 128, 256, 256, 512, 512]
 
     for layer in range(num_layers):
-        model.add(Conv2D(filters = num_filters[layer], kernel_size = 5, padding = 'same', activation = activation))
+        model.add(Conv2D(input_shape= (64,64,3), filters = num_filters[layer], kernel_size = 5, padding = 'same', activation = activation))
         if layer != num_layers:
             model.add(MaxPooling2D())
             model.add(BatchNormalization())
