@@ -6,7 +6,6 @@ from transfer_learning import *
 
 import optuna
 import joblib
-import os
 from optuna.samplers import TPESampler
 from types import SimpleNamespace
 
@@ -48,5 +47,4 @@ def run_model(data="base_data.zip"):
     
 
 if __name__ == "__main__":
-    print(os.getcwd())
     run_model()

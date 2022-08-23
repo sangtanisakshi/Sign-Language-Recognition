@@ -17,7 +17,7 @@ def train_CNN(model,train,val,EPOCHS,trial_no="NA"):
   history = model.fit(x=train, validation_data = val, epochs=EPOCHS, shuffle = True, verbose = 1, callbacks=[early_stopping])
 
   if trial_no == "best_model":
-    model.save("results/best_model/"+trial_no)
+    model.save("results/best_model/"+"saved"+str(trial_no))
     train_results(history,trial_no)
   
   return model,history
@@ -26,7 +26,7 @@ def train_CNN(model,train,val,EPOCHS,trial_no="NA"):
 def train_results(history,trial_no):
 
   if trial_no == "best_model":
-    fig_path = ("results/best_model/loss_acc_curve_" + trial_no + ".jpg")
+    fig_path = ("results/best_model/saved_best_model/figures/loss_acc_curve_" + str(trial_no) + ".jpg")
   else:
     fig_path = ("results/hyperparameter_optimization/trials_plots/" + "trial" + str(trial_no) + ".jpg")
   plt.subplot(2,1,1)

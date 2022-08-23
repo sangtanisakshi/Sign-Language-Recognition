@@ -27,6 +27,6 @@ def create_model(num_layers,activation,learning_rate):
     model.compile(loss=CategoricalCrossentropy(),
                   optimizer=Adam(learning_rate=learning_rate),
                   metrics=['accuracy'])
-    
+    print("--------"+"New CNN Model Created"+"--------")
     return model
 

@@ -24,13 +24,13 @@ def test_results(test,pred_vals):
     plt.rcParams["figure.figsize"] = (15,10)
     disp.plot(cmap=plt.cm.Blues)
     plt.tight_layout()
-    plt.savefig('results/best_model/'+'confusion_matrix.jpg')
+    plt.savefig('results/saved_best_model/figures/'+'confusion_matrix.jpg')
     #plt.show() commented for ipynb later
     #print(classification_report(test.classes, pred_vals, target_names=classes))
     
     cr = classification_report(test.classes, pred_vals, target_names=classes)
     ##save metrics in text file
-    f = open('results/best_model/evaluation_metrics.txt', 'w')
+    f = open('results/best_model/saved_best_model/figures/evaluation_metrics.txt', 'w')
     f.write('Metrics for Best Model\n\nClassification Report\n\n{}\n\nConfusion Matrix\n\n{}\n'.format(cr, cm))
     f.close()
 
