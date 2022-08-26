@@ -1,0 +1,12 @@
+,model,val_accuracy,Training time (sec)
+0,ResNet50V2,0.8638,188.83
+1,ResNet152V2,0.8597,248.25
+2,ResNet101V2,0.8495,200.09
+3,VGG16,0.8433,190.35
+4,Xception,0.8144,193.33
+5,InceptionResNetV2,0.7685,214.45
+6,VGG19,0.7277,192.8
+7,InceptionV3,0.7213,185.2
+8,ResNet101,0.3154,200.58
+9,ResNet50,0.311,191.21
+10,ResNet152,0.2821,212.77

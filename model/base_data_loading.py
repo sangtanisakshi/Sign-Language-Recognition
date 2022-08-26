@@ -22,6 +22,10 @@ def split_data(SPLIT_RATIO=(0.75,0.15,0.10),data_type="base_data"):
         ip_path = "/content/data/grassknot/"
         op_path = "/content/data/pt_data/"
         SPLIT_RATIO = (0.10,0.05,0.85)
+    elif data_type == "tfl_data_split":
+        ip_path="/content/data/massey/"
+        op_path = "/content/data/tfl_data_split/"
+        SPLIT_RATIO = (0.10,0.05,0.85)
     elif data_type == "tfl_data":
         ip_path="/content/data/massey/"
         op_path = "/content/data/tfl_data/"
