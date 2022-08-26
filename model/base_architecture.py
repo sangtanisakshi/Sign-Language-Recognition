@@ -1,10 +1,9 @@
 import tensorflow
 from tensorflow import keras
-from keras import layers,losses,models,optimizers
 from keras.layers import Conv2D, MaxPooling2D, BatchNormalization, Dropout, Flatten, Dense
-from keras.models import Sequential
+from keras.models import Sequential,Model
 from keras.losses import CategoricalCrossentropy
-from keras.optimizers import Adam
+from keras.optimizer_v2 import adam
 
 NUM_CLASSES=26 #A-Z
 
@@ -25,8 +24,7 @@ def create_model(num_layers,activation,learning_rate):
     
     #compile the model
     model.compile(loss=CategoricalCrossentropy(),
-                  optimizer=Adam(learning_rate=learning_rate),
+                  optimizer=adam.Adam(learning_rate=learning_rate),
                   metrics=['accuracy'])
     print("--------"+"New CNN Model Created"+"--------")
     return model
-

@@ -11,13 +11,25 @@ def get_data(data):
 #unzip the downloaded dataset
     from zipfile import ZipFile
     with ZipFile(data,"r") as zipObj:
-        zipObj.extractall()
+        zipObj.extractall(path="/content/data/")
 
-def split_data():
-    SPLIT_RATIO = (0.75,0.15,0.10)
-    splitfolders.ratio("grassknot/", output="base_data/",
+def split_data(SPLIT_RATIO=(0.75,0.15,0.10),data_type="base_data"):
+
+    if data_type == "base_data":
+        ip_path = "/content/data/grassknot/"
+        op_path = "/content/data/base_data/"
+    elif data_type == "comparison":
+        ip_path = "/content/data/grassknot/"
+        op_path = "/content/data/pt_data/"
+        SPLIT_RATIO = (0.10,0.05,0.85)
+    elif data_type == "tfl_data":
+        ip_path="/content/data/massey/"
+        op_path = "/content/data/tfl_data/"
+    
+    splitfolders.ratio(input=ip_path, output=op_path,
     seed=42, ratio=SPLIT_RATIO, group_prefix=None, move=False)
-    print("Split data in the ratio 75:15:10 for training,validation and test. Folders in ../base_data/")
+    print("Split data in the ratio, "+ str(SPLIT_RATIO) +" for training, validation and test.")
+    return op_path
     
 def set_fixed_hyperparameters():
     #fixed hyperparameters
@@ -39,17 +51,17 @@ def set_data_augmentation():
 
     return gen_aug,gen
 
-def load_image_generator(train_aug,val_aug,batch_size,IMG_TARGET_SIZE):
+def load_image_generator(train_aug,val_aug,batch_size,IMG_TARGET_SIZE,data_path="/content/data/base_data/"):
     ##image directories - loading data into train, validation and test
-    train = train_aug.flow_from_directory("base_data/train", 
+    train = train_aug.flow_from_directory(data_path+"train", 
                                 target_size=IMG_TARGET_SIZE,
                                 batch_size=batch_size, shuffle=True)
 
-    val = val_aug.flow_from_directory("base_data/val",
+    val = val_aug.flow_from_directory(data_path+"val",
                               target_size=IMG_TARGET_SIZE,
                               batch_size=batch_size, shuffle=False)
 
-    test = val_aug.flow_from_directory("base_data/test", 
+    test = val_aug.flow_from_directory(data_path+"test", 
                                target_size=IMG_TARGET_SIZE, 
                                class_mode=None, shuffle=False)
     
@@ -62,5 +74,5 @@ def get_hpo_parameters(trial):
     num_layers = trial.suggest_categorical('num_layers', [3,4,5,6])
     activation = trial.suggest_categorical('activation',['relu','selu','elu'])
     learning_rate = trial.suggest_float("learning_rate",1e-5,1e-2,log=True)
-    
+    print("Hyperparameters for current trial selected.")
     return batch_size,num_layers,activation,learning_rate
