@@ -1,10 +1,11 @@
-from base_architecture import *
-
 from tensorflow import keras
 from keras import callbacks
 import os
 import matplotlib.pyplot as plt
 from time import perf_counter
+
+from base_architecture import *
+from base_main import project_path
 
 #train the CNN model 
 def train_CNN(model,train,val,EPOCHS,trial_no="NA"):
@@ -17,7 +18,7 @@ def train_CNN(model,train,val,EPOCHS,trial_no="NA"):
   history = model.fit(x=train, validation_data = val, epochs=EPOCHS, shuffle = True, verbose = 1, callbacks=[early_stopping])
 
   if trial_no == "best_model":
-    model.save("/content/results/best_model/"+"saved_"+str(trial_no))
+    model.save(project_path + "/results/best_model/"+"saved_"+str(trial_no))
     train_results(history,trial_no)
   
   return model,history
@@ -26,11 +27,11 @@ def train_CNN(model,train,val,EPOCHS,trial_no="NA"):
 def train_results(history,trial_no):
 
   if trial_no == "best_model":
-    fig_path = ("/content/results/best_model/figures/loss_acc_curve_" + str(trial_no) + ".jpg")
+    fig_path = (project_path + "/results/best_model/figures/loss_acc_curve_" + str(trial_no) + ".jpg")
   elif trial_no == "comparison":
-    fig_path = ("/content/results/pretrained_models/best_pretrained_model_loss_acc_curve.jpg")
+    fig_path = (project_path + "/results/pretrained_models/best_pretrained_model_loss_acc_curve.jpg")
   else:
-    fig_path = ("/content/results/hyperparameter_optimization/trials_plots/" + "trial" + str(trial_no) + ".jpg")
+    fig_path = (project_path + "/results/hyperparameter_optimization/trials_plots/" + "trial" + str(trial_no) + ".jpg")
   plt.subplot(2,1,1)
   plt.plot(history.history['accuracy'], label='accuracy')
   plt.plot(history.history['val_accuracy'], label = 'val_accuracy')

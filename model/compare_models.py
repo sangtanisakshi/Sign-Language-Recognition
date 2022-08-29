@@ -13,6 +13,7 @@ from time import perf_counter
 from base_data_loading import *
 from base_train import *
 from base_test import *
+from base_main import *
 
 def get_model(model):
 
@@ -67,10 +68,9 @@ def pretrain_train(pt_train,pt_val,models):
 
 def compare_models():
 
-    data_path = split_data(data_type="comparison")
+    data_path = split_data("comparison")
     train_aug,val_aug= set_data_augmentation()
-    pt_train,pt_val,pt_test = load_image_generator(train_aug,val_aug,105,(128,128),"/content/data/pt_data/")
-
+    pt_train,pt_val,pt_test = load_image_generator(train_aug,val_aug,105,(128,128),data_path)
     ##get keras models
     models = {
     "InceptionResNetV2": {"model":tf.keras.applications.InceptionResNetV2, "perf":0},
@@ -116,11 +116,12 @@ def compare_models():
 
     print("Results of training after 5 epochs on all models saved in results. Best model is "+ str(best_pretrained_model[0]))
 
-    ## Create a new model
+    ## Fine tuning the pretrained model
     pretrained_model = get_model( eval("tf.keras.applications."+ best_pretrained_model[0]) )
 
+    #initialize augmentation and image generators and load all data with 75-15-10 split
     train_aug,val_aug= set_data_augmentation()
-    train,val,test = load_image_generator(train_aug,val_aug,105,(128,128),"/content/data/base_data/")
+    train,val,test = load_image_generator(train_aug,val_aug,105,(128,128),(project_path+"/data/base_data"))
 
     ##train the best pretrained model
     history = pretrained_model.fit(train,

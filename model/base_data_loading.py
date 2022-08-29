@@ -2,37 +2,45 @@ import splitfolders
 import tensorflow as tf
 import warnings
 import optuna
+import os
 from tensorflow import keras
 from keras import preprocessing
 from keras.preprocessing.image import ImageDataGenerator
 
+from base_main import project_path
 
-def get_data(data):
-#unzip the downloaded dataset
+def get_data():
+    #unzip the downloaded dataset
+    data=(project_path+"/asl-alphabet.zip")
     from zipfile import ZipFile
     with ZipFile(data,"r") as zipObj:
-        zipObj.extractall(path="/content/data/")
+        zipObj.extractall(path=(project_path+"/data/"))
 
-def split_data(SPLIT_RATIO=(0.75,0.15,0.10),data_type="base_data"):
+def split_data(data_type="base_data"):
+
+    os.rename((project_path+"/data/asl_alphabet_train/"),(project_path+"/data/dataset/"))
+    #remove the unwanted classes and folders
+    os.rmdir(project_path+"/data/asl_alphabet_test/")
+    os.rmdir(project_path+"/data/dataset/space/")
+    os.rmdir(project_path+"/data/dataset/delete/")
+    os.rmdir(project_path+"/data/dataset/nothing/")
+
+
+    ip_path = (project_path+"/data/dataset/")
 
     if data_type == "base_data":
-        ip_path = "/content/data/grassknot/"
-        op_path = "/content/data/base_data/"
+        op_path = (project_path+"/data/base_data/")
+        SPLIT_RATIO=(0.75,0.15,0.10)
+
     elif data_type == "comparison":
-        ip_path = "/content/data/grassknot/"
-        op_path = "/content/data/pt_data/"
+        op_path = (project_path+"/data/pt_data/")
         SPLIT_RATIO = (0.10,0.05,0.85)
-    elif data_type == "tfl_data_split":
-        ip_path="/content/data/massey/"
-        op_path = "/content/data/tfl_data_split/"
-        SPLIT_RATIO = (0.10,0.05,0.85)
-    elif data_type == "tfl_data":
-        ip_path="/content/data/massey/"
-        op_path = "/content/data/tfl_data/"
     
     splitfolders.ratio(input=ip_path, output=op_path,
     seed=42, ratio=SPLIT_RATIO, group_prefix=None, move=False)
     print("Split data in the ratio, "+ str(SPLIT_RATIO) +" for training, validation and test.")
+
+    #now that the data is split, we dont need to keep the entire original dataset
     return op_path
     
 def set_fixed_hyperparameters():
@@ -55,7 +63,7 @@ def set_data_augmentation():
 
     return gen_aug,gen
 
-def load_image_generator(train_aug,val_aug,batch_size,IMG_TARGET_SIZE,data_path="/content/data/base_data/"):
+def load_image_generator(train_aug,val_aug,batch_size,IMG_TARGET_SIZE,data_path=(project_path+"/base_data/")):
     ##image directories - loading data into train, validation and test
     train = train_aug.flow_from_directory(data_path+"train", 
                                 target_size=IMG_TARGET_SIZE,

@@ -3,7 +3,7 @@ from tensorflow import keras
 from keras.layers import Conv2D, MaxPooling2D, BatchNormalization, Dropout, Flatten, Dense
 from keras.models import Sequential,Model
 from keras.losses import CategoricalCrossentropy
-from keras.optimizer_v2 import adam
+from keras.optimizers import adam
 
 NUM_CLASSES=26 #A-Z
 
