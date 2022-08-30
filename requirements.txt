@@ -1,5 +1,6 @@
 split-folders
-keras
+tensorflow==2.9.1
+keras==2.9.0
 gdown
 zipp
 pandas
@@ -9,5 +10,4 @@ numpy
 sklearn
 scipy
 seaborn
-tensorflow
 optuna
