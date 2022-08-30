@@ -1,5 +1,3 @@
-global project_path
-
 import optuna
 import joblib
 import os
@@ -8,13 +6,14 @@ from types import SimpleNamespace
 
 from base_data_loading import *
 from base_test import *
+from base_train import *
 from base_hyperparameter_optimization import *
 from compare_models import *
 
 def run_model():
     
     ##unzip the data 
-    get_data()
+    #get_data()
 
     ##split the data into training, validation and test and get the path where the data is stored
     ##data type can be base_data, comparison or tfl_data
@@ -27,10 +26,10 @@ def run_model():
     ##run hyperparameter optimization
     sampler = TPESampler(seed=123)  # Make the sampler behave in a deterministic way and get reproducable results
     study = optuna.create_study(direction="maximize",sampler=sampler)
-    study.optimize(hpo, n_trials=25)
-    joblib.dump(study,(project_path+"/results/hyperparameter_optimization/trials_data/study.pkl"))
+    study.optimize(hpo, n_trials=1)
+    joblib.dump(study,("./results/hyperparameter_optimization/trials_data/study.pkl"))
     study_data = pd.DataFrame(study.trials_dataframe())
-    data_csv = study_data.to_csv((project_path + "/results/hyperparameter_optimization/trials_data/study.csv"))
+    data_csv = study_data.to_csv("./results/hyperparameter_optimization/trials_data/study.csv")
 
     print("Number of finished trials: {}".format(len(study.trials)))
     print("Best trial params:")
@@ -58,10 +57,8 @@ def run_model():
     ##train pretrained models with our base dataset
     print("---------Training our base model data on pretrained Keras Imagenet Models---------")
 
-    compare_models()
+    comparison_models()
 
 if __name__ == "__main__":
 
-    #get os path
-    project_path = os.getcwd()
     run_model()

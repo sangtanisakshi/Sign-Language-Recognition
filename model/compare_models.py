@@ -11,7 +11,7 @@ from keras.applications import *
 from time import perf_counter
 
 from base_data_loading import *
-from base_train import *
+from base_train import train_results
 from base_test import *
 from base_main import *
 
@@ -54,7 +54,7 @@ def pretrain_train(pt_train,pt_val,models):
         start = perf_counter()
 
         ##Fit the model
-        history = m.fit(pt_train,validation_data=pt_val,epochs=5,verbose=0)
+        history = m.fit(pt_train,validation_data=pt_val,epochs=1,verbose=0)
 
         ##Save the duration and the val_accuracy
         duration = perf_counter() - start
@@ -66,7 +66,7 @@ def pretrain_train(pt_train,pt_val,models):
         models[name]['val_acc'] = [round(v,4) for v in val_acc]
     return models
 
-def compare_models():
+def comparison_models():
 
     data_path = split_data("comparison")
     train_aug,val_aug= set_data_augmentation()
@@ -100,10 +100,10 @@ def compare_models():
                                 columns = ['model','val_accuracy','Training time (sec)'])
     df_results.sort_values(by='val_accuracy', ascending=False, inplace=True)
     df_results.reset_index(inplace=True,drop=True)
-    df_results.to_csv("/content/results/pretrained_models/pretrained_models_results.csv")
-    
+    df_results.to_csv("./results/pretrained_models/pretrained_models_results.csv")
+
     ##save plot for the accuracy after 5 epochs
-    fig_path = "/content/results/pretrained_models/pretrained_model_acc_5_epochs.jpg"
+    fig_path = "./results/pretrained_models/pretrained_model_acc_5_epochs.jpg"
     plt.figure(figsize = (15,5))
     sns.barplot(x = 'model', y = 'val_accuracy', data = df_results, color="red")
     plt.title('Accuracy on the Test set after 5 epochs', fontsize = 15)
@@ -121,7 +121,7 @@ def compare_models():
 
     #initialize augmentation and image generators and load all data with 75-15-10 split
     train_aug,val_aug= set_data_augmentation()
-    train,val,test = load_image_generator(train_aug,val_aug,105,(128,128),(project_path+"/data/base_data"))
+    train,val,test = load_image_generator(train_aug,val_aug,105,(128,128),("./data/base_data"))
 
     ##train the best pretrained model
     history = pretrained_model.fit(train,

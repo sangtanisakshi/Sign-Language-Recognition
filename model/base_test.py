@@ -2,10 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay,classification_report,accuracy_score
 
-from base_train import *
-from base_architecture import *
-from base_main import project_path
-
 ##run test on the model with the current trial or the final model
 def test_model(current_model,test,trial_no="NA"):
     pred = current_model.predict(test, batch_size=(test.samples//test.batch_size+1))
@@ -18,14 +14,14 @@ def test_model(current_model,test,trial_no="NA"):
     return score
 
 ##get test results and save them
-def test_results(test,pred_vals,comparison=False):
+def test_results(test,pred_vals,comparison=False,display=False):
 
     if comparison==True:
-        fig_path=(project_path + "/results/pretrained_models/best_pt_model_confusion_matrix.jpg")
-        cr_path=(project_path + "/results/pretrained_models/best_pt_model_evaluation_metrics.txt")
+        fig_path=("./results/pretrained_models/best_pt_model_confusion_matrix.jpg")
+        cr_path=("./results/pretrained_models/best_pt_model_evaluation_metrics.txt")
     else:
-        fig_path=(project_path + "/results/best_model/figures/confusion_matrix.jpg")
-        cr_path=(project_path + "/results/best_model/figures/evaluation_metrics.txt")
+        fig_path=("./results/best_model/figures/confusion_matrix.jpg")
+        cr_path=("./results/best_model/figures/evaluation_metrics.txt")
     
     classes = list(test.class_indices.keys())
     cm = confusion_matrix(test.classes,pred_vals)
@@ -35,8 +31,9 @@ def test_results(test,pred_vals,comparison=False):
     disp.plot(cmap=plt.cm.Blues)
     plt.tight_layout()
     plt.savefig(fig_path)
-    #plt.show() commented for ipynb later
-    #print(classification_report(test.classes, pred_vals, target_names=classes))
+    if display==True:
+        plt.show()
+        print(classification_report(test.classes, pred_vals, target_names=classes))
     
     cr = classification_report(test.classes, pred_vals, target_names=classes)
     ##save metrics in text file

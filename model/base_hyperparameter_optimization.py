@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score
 from keras.backend import clear_session
 
 from base_test import test_model
+from base_train import train_CNN
 
 def hpo(trial):
 
